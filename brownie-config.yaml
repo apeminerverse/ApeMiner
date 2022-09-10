@@ -1,0 +1,67 @@
+# Brownie configuration file
+# https://eth-brownie.readthedocs.io/en/stable/config.html
+# exclude SafeMath when calculating test coverage
+# https://eth-brownie.readthedocs.io/en/v1.10.3/config.html#exclude_paths
+reports:
+  exclude_contracts:
+    - SafeMath
+dependencies:
+  - OpenZeppelin/openzeppelin-contracts@4.7.3
+compiler:
+  solc:
+    remappings:
+      - '@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.7.3'
+networks:
+        # any settings given here will replace the defaults
+    development:
+        host: http://127.0.0.1
+        gas_price: 0
+        persist: false
+        reverting_tx_gas_limit: 6721975
+        test_rpc:
+            cmd: ganache-cli
+            port: 8545
+            gas_limit: 6721975
+            accounts: 10
+            evm_version: istanbul
+            mnemonic: brownie
+    # set your Infura API token to the environment variable WEB3_INFURA_PROJECT_ID
+    bsc-test:
+        gas_limit: 6721975
+        uniswap_router: "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"
+        dai_token: "0x8a9424745056Eb399FD19a0EC26A14316684e274"
+        usdt_token: "0x55d398326f99059fF775485246999027B3197955"
+        weth_token: "0x2c15A8A7d2fB45Fe139cecC0a746e255F366CB12"
+    mainnet-fork:
+        gas_limit: 6721975
+        weth_token: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+        dai_token: '0x6b175474e89094c44da98b954eedeac495271d0f'
+        usdc: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+        uniswap_router: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
+    mainnet:
+        host: https://eth-mainnet.alchemyapi.io/v2/$WEB3_ALCHEMY_MAINNET
+    goerli:
+        host: https://eth-goerli.alchemyapi.io/v2/$WEB3_ALCHEMY_GOERILI
+    rinkeby:
+        # host: https://rinkeby.infura.io/v3/$WEB3_INFURA_PROJECT_ID
+        host: https://eth-rinkeby.alchemyapi.io/v2/$WEB3_ALCHEMY_RINKEBY
+    polygon:
+        host: https://polygon-mumbai.g.alchemy.com/v2/$WEB3_ALCHEMY_POLYON
+    mumbai:
+        host: https://polygon-mumbai.g.alchemy.com/v2/$WEB3_ALCHEMY_MUMBAI
+    wuhan:
+        host: https://opbningxia.bsngate.com:18602/api/0edab0cd18e44c9cb9ad2a82cac45b62/rpc
+        gas_limit: 30000000
+        gas_price: 1500000000
+
+pytest:
+    # these settings replace the defaults when running pytest
+    gas_limit: 6721975
+    default_contract_owner: true
+    reverting_tx_gas_limit: 6721975
+    revert_traceback: true
+wallets:
+    admin: ${ADMIN_PRIVATE_KEY}
+    creator: ${CREATOR_PRIVATE_KEY}
+    consumer: ${CONSUMER_PRIVATE_KEY}
+    iwan: ${IWANCAO_PRIVATE_KEY}
