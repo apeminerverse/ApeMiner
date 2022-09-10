@@ -11,12 +11,21 @@ def main():
 
     try:
         if active_network in LOCAL_NETWORKS:
-            nft = YachtPartyAirdrop.deploy(url, '', addr(admin))
+            # nft = YachtPartyAirdrop.deploy(url, '', addr(admin))
 
-            # abiEncode(nft)
+            # # abiEncode(nft)
 
-            nft.startAirdrop(addr(admin))
-            nft.testMint(addr(creator))
+            # nft.startAirdrop(addr(admin))
+            # nft.testMint(addr(creator))
+
+            bodyNFT = ApeMinerBodyNFT.deploy(url,  100, 50,  addr(admin))
+            tx = bodyNFT.startPublicSale(addr(admin))
+            tx.wait(1)
+
+            tx = bodyNFT.publicSaleMint(admin, 5, addr2(creator, 600))
+            tx.wait(1)
+
+            bodyNFT.publicSaleMint(creator, 5, addr2(iwan, 600))
 
         if active_network in TEST_NETWORKS:
             # nft = YachtPartyAirdrop[-1]
@@ -25,10 +34,11 @@ def main():
 
             bodyNFT = ApeMinerBodyNFT[-1]
 
-            bodyNFT.publicSaleMint(5, addr2(creator, 10))
+            bodyNFT.publicSaleMint(0, 5, addr2(creator, 10))
+            bodyNFT.publicSaleMint(creator, 5, addr2(iwan, 10))
 
         if active_network in REAL_NETWORKS:
-            ft = YachtPartyAirdrop[-1]
+            nft = YachtPartyAirdrop[-1]
             nft.startAirdrop(addr(admin))
             nft.testMint(addr(creator))
 

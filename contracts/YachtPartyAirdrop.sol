@@ -14,7 +14,6 @@ contract YachtPartyAirdrop is ERC721A, Ownable {
     using Strings for uint256;
 
     uint256 public constant MAX_SUPPLY = 300;
-    uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
     string private _baseTokenURI;
 
@@ -24,12 +23,6 @@ contract YachtPartyAirdrop is ERC721A, Ownable {
     event AirdropPaused();
     event baseUIRChanged(string);
 
-    modifier onlyEOA() {
-        if (tx.origin != msg.sender)
-            revert OnlyExternallyOwnedAccountsAllowed();
-        _;
-    }
-
     constructor(string memory baseURI)
         ERC721A("AprMinerYachtPartyAirdrop", "AYA")
     {
@@ -38,14 +31,14 @@ contract YachtPartyAirdrop is ERC721A, Ownable {
 
     // Airdrop
 
-    function airdropMint(address[] memory _to) external onlyEOA onlyOwner {
+    function airdropMint(address[] memory _to) external onlyOwner {
         if (totalSupply() + _to.length > MAX_SUPPLY)
             revert AmountExceedsSupply();
 
         for (uint256 i = 0; i < _to.length; i++) {
-            if (users[msg.sender]) revert UserHadOne();
+            if (users[_to[i]]) revert UserHadOne();
             _safeMint(_to[i], 1);
-            users[msg.sender] = true;
+            users[_to[i]] = true;
         }
     }
 

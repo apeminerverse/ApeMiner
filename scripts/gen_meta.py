@@ -2,8 +2,6 @@ import json
 import os
 import sys
 
-ipfs = {}
-
 
 def gen_meta(meta_template, url, number):
     for i in range(number):

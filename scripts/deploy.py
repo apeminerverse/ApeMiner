@@ -11,16 +11,16 @@ def main():
     try:
         if active_network in LOCAL_NETWORKS:
             # nft = YachtPartyAirdrop.deploy(url, addr(admin))
-            bodyNFT = ApeMinerBodyNFT.deploy(url, 1, addr(admin))
+            bodyNFT = ApeMinerBodyNFT.deploy(url, 100, 50, addr(admin))
 
         if active_network in TEST_NETWORKS:
             # nft = YachtPartyAirdrop.deploy(url, addr(admin))
-            bodyNFT = ApeMinerBodyNFT.deploy(url, 1, addr(admin))
+            bodyNFT = ApeMinerBodyNFT.deploy(url,  100, 50,  addr(admin))
             bodyNFT.startPublicSale(addr(admin))
 
         if active_network in REAL_NETWORKS:
             # nft = YachtPartyAirdrop.deploy(url, addr(admin))
-            bodyNFT = ApeMinerBodyNFT.deploy(url, 1, addr(admin))
+            bodyNFT = ApeMinerBodyNFT.deploy(url,  100, 50, addr(admin))
 
     except Exception:
         console.print_exception()
