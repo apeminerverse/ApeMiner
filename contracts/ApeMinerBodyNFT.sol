@@ -5,7 +5,6 @@ pragma solidity ^0.8.4;
 import "./ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 error OnlyExternallyOwnedAccountsAllowed();
@@ -16,13 +15,13 @@ error InsufficientPayment();
 error NeedRecommender(address);
 
 contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
-    using Strings for uint256;
     using SafeMath for uint256;
 
     uint256 public constant MAX_SUPPLY = 2000;
     uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
     uint256 private _publicSaleStart = FAR_FUTURE;
+    uint256 private _showTimeStart = FAR_FUTURE;
     string private _baseTokenURI;
 
     uint256 private _price;
@@ -32,6 +31,8 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
     event publicSaleStart();
     event publicSalePaused();
     event baseUIRChanged(string);
+    event showTimeNotStart();
+    event showTimeStart();
 
     modifier onlyEOA() {
         if (tx.origin != msg.sender)
@@ -46,15 +47,19 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
     ) ERC721A("ApeMinerBodyNFT", "ABN") {
         _baseTokenURI = baseURI;
         _price = price;
-        require(share > 0 && share < 100, "share must between 0 and 100");
+        require(share >= 0 && share <= 100, "share must between 0 and 100");
         _share = share;
         members[msg.sender] = true;
     }
 
     // publicSale
 
-    function ispublicSaleActive() public view returns (bool) {
+    function isPublicSaleActive() public view returns (bool) {
         return block.timestamp > _publicSaleStart;
+    }
+
+    function isShowTimeStart() public view returns (bool) {
+        return block.timestamp > _showTimeStart;
     }
 
     function publicSaleMint(address recommender, uint256 quantity)
@@ -63,7 +68,7 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
         onlyEOA
         nonReentrant
     {
-        if (!ispublicSaleActive()) revert SaleNotStarted();
+        if (!isPublicSaleActive()) revert SaleNotStarted();
         if (totalSupply() + quantity > MAX_SUPPLY) revert AmountExceedsSupply();
         if (recommender == address(0)) recommender = owner();
         if (!members[recommender]) revert NeedRecommender(recommender);
@@ -79,7 +84,7 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
 
         // Refund overpayment
         if (msg.value > cost) {
-            payable(msg.sender).transfer(msg.value - cost);
+            payable(msg.sender).transfer(msg.value.sub(cost));
         }
     }
 
@@ -109,8 +114,13 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
     {
         require(_exists(tokenId), "nonexistent token");
 
-        string memory baseURI = _baseURI();
-        return string(abi.encodePacked(baseURI, tokenId.toString(), ".json"));
+        if (!isShowTimeStart())
+            return string(abi.encodePacked(_baseURI(), "cover.json"));
+        else
+            return
+                string(
+                    abi.encodePacked(_baseURI(), _toString(tokenId), ".json")
+                );
     }
 
     // OWNERS + HELPERS
@@ -124,6 +134,16 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
     function pausePublicSale() external onlyOwner {
         _publicSaleStart = FAR_FUTURE;
         emit publicSalePaused();
+    }
+
+    function startShowTime() external onlyOwner {
+        _showTimeStart = block.timestamp;
+        emit showTimeStart();
+    }
+
+    function pauseShowTime() external onlyOwner {
+        _showTimeStart = FAR_FUTURE;
+        emit showTimeNotStart();
     }
 
     function setURInew(string memory uri)
@@ -145,5 +165,48 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
 
     function withdraw() external onlyOwner {
         payable(owner()).transfer(address(this).balance);
+    }
+
+    /**
+     * @dev Converts a uint256 to its ASCII string decimal representation.
+     */
+    function _toString(uint256 value)
+        internal
+        pure
+        virtual
+        returns (string memory str)
+    {
+        assembly {
+            // The maximum value of a uint256 contains 78 digits (1 byte per digit),
+            // but we allocate 0x80 bytes to keep the free memory pointer 32-byte word aligned.
+            // We will need 1 32-byte word to store the length,
+            // and 3 32-byte words to store a maximum of 78 digits. Total: 0x20 + 3 * 0x20 = 0x80.
+            str := add(mload(0x40), 0x80)
+            // Update the free memory pointer to allocate.
+            mstore(0x40, str)
+
+            // Cache the end of the memory to calculate the length later.
+            let end := str
+
+            // We write the string from rightmost digit to leftmost digit.
+            // The following is essentially a do-while loop that also handles the zero case.
+            // prettier-ignore
+            for { let temp := value } 1 {} {
+                str := sub(str, 1)
+                // Write the character to the pointer.
+                // The ASCII index of the '0' character is 48.
+                mstore8(str, add(48, mod(temp, 10)))
+                // Keep dividing `temp` until zero.
+                temp := div(temp, 10)
+                // prettier-ignore
+                if iszero(temp) { break }
+            }
+
+            let length := sub(end, str)
+            // Move the pointer 32 bytes leftwards to make room for the length.
+            str := sub(str, 0x20)
+            // Store the length.
+            mstore(str, length)
+        }
     }
 }
