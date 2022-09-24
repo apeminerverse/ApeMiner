@@ -1,5 +1,7 @@
 from scripts.functions import *
 
+url = 'https://bafybeid33sqhohn67wwlotseh4hczouzyxlllhevsipj5qseod7q56xohm.ipfs.nftstorage.link/'
+
 
 def main():
     active_network = network.show_active()
@@ -8,8 +10,9 @@ def main():
     admin, creator, consumer, iwan = get_accounts(active_network)
 
     try:
-        nft = Agreement.deploy(addr(admin))
-        flat_contract('Agreement', Agreement.get_verification_info())
+        nft = YachtPartyAirdrop.deploy(url, addr(admin))
+        flat_contract('YachtPartyAirdrop',
+                      YachtPartyAirdrop.get_verification_info())
 
     except Exception:
         console.print_exception()

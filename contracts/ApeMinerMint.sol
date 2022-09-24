@@ -10,13 +10,14 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 error OnlyExternallyOwnedAccountsAllowed();
 error SaleNotStarted();
 error AmountExceedsSupply();
+error AmountExceedsEach();
 error InsufficientPayment();
-error NeedRecommender(address);
 
-contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
+contract ApeMinerNFT is ERC721A, Ownable, ReentrancyGuard {
     using SafeMath for uint256;
 
     uint256 public constant MAX_SUPPLY = 20000;
+    uint256 public constant MAX_EACH_ADDRESS = 5;
     uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
     uint256 private _publicSaleStart = FAR_FUTURE;
@@ -24,8 +25,6 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
     string private _baseTokenURI;
 
     uint256 private _price;
-    uint8 private _share;
-    mapping(address => bool) members;
 
     event publicSaleStart();
     event publicSalePaused();
@@ -39,16 +38,11 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
         _;
     }
 
-    constructor(
-        string memory baseURI,
-        uint256 price,
-        uint8 share
-    ) ERC721A("ApeMinerBodyNFT", "ABN") {
+    constructor(string memory baseURI, uint256 price)
+        ERC721A("ApeMinerNFT", "ABN")
+    {
         _baseTokenURI = baseURI;
         _price = price;
-        require(share >= 0 && share <= 100, "share must between 0 and 100");
-        _share = share;
-        members[msg.sender] = true;
     }
 
     // publicSale
@@ -61,7 +55,11 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
         return block.timestamp > _showTimeStart;
     }
 
-    function publicSaleMint(address recommender, uint256 quantity)
+    function getPrice() public view returns (uint256) {
+        return _price;
+    }
+
+    function publicSaleMint(uint256 quantity)
         external
         payable
         onlyEOA
@@ -69,17 +67,12 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
     {
         if (!isPublicSaleActive()) revert SaleNotStarted();
         if (totalSupply() + quantity > MAX_SUPPLY) revert AmountExceedsSupply();
-        if (recommender == address(0)) recommender = owner();
-        if (!members[recommender]) revert NeedRecommender(recommender);
+        if (quantity > MAX_EACH_ADDRESS) revert AmountExceedsEach();
 
         uint256 cost = _price.mul(quantity);
         if (msg.value < cost) revert InsufficientPayment();
 
         _safeMint(msg.sender, quantity);
-
-        uint256 split = cost.mul(_share).div(100);
-        payable(recommender).transfer(split);
-        members[msg.sender] = true;
 
         // Refund overpayment
         if (msg.value > cost) {

@@ -5,3 +5,4 @@ __pycache__
 build/
 reports/
 meta/
+*_flat/
