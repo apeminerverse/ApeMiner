@@ -1,0 +1,16 @@
+{
+    "name": "ApeMinerNFT",
+    "symbol": "AMN",
+    "description": "This is the basic function NFT of apeminer.",
+    "image": "ipfs://bafybeicpdx4537wgggpy72ts3r4dl2dvx3nzlkv3bacqlmc7fnx2u7coqq",
+    "attributes": [
+        {
+            "trait_type": "Date",
+            "value": "2022-10-01"
+        },
+        {
+            "trait_type": "In-memory",
+            "value": "ApeMiner Yacht Party 2022"
+        }
+    ]
+}

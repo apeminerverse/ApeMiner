@@ -4,15 +4,12 @@ pragma solidity ^0.8.4;
 
 import "./ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 
 error OnlyExternallyOwnedAccountsAllowed();
 error AmountExceedsSupply();
 error UserHadOne();
 
 contract YachtPartyAirdrop is ERC721A, Ownable {
-    using Strings for uint256;
-
     uint256 public constant MAX_SUPPLY = 300;
 
     string private _baseTokenURI;
@@ -67,9 +64,7 @@ contract YachtPartyAirdrop is ERC721A, Ownable {
         returns (string memory)
     {
         require(_exists(tokenId), "nonexistent token");
-
-        string memory baseURI = _baseURI();
-        return string(abi.encodePacked(baseURI, tokenId.toString(), ".json"));
+        return _baseTokenURI;
     }
 
     // OWNERS + HELPERS

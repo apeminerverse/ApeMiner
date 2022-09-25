@@ -1,5 +1,5 @@
 from web3 import Web3
-from brownie import YachtPartyAirdrop, ApeMinerBodyNFT, accounts, network, config, web3, convert
+from brownie import YachtPartyAirdrop, ApeMinerBodyNFT, ApeMinerAirdrop, ApeMinerNFT, accounts, network, config, web3, convert
 from scripts.tools import *
 import os
 import zlib

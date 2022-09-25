@@ -16,21 +16,23 @@ error InsufficientPayment();
 contract ApeMinerNFT is ERC721A, Ownable, ReentrancyGuard {
     using SafeMath for uint256;
 
-    uint256 public constant MAX_SUPPLY = 20000;
+    uint256 public constant MAX_SUPPLY = 3000;
     uint256 public constant MAX_EACH_ADDRESS = 5;
     uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
     uint256 private _publicSaleStart = FAR_FUTURE;
     uint256 private _showTimeStart = FAR_FUTURE;
     string private _baseTokenURI;
+    string private _coverURI;
 
     uint256 private _price;
 
     event publicSaleStart();
     event publicSalePaused();
-    event baseUIRChanged(string);
     event showTimeNotStart();
     event showTimeStart();
+    event baseUIRChanged(string);
+    event coverUIRChanged(string);
 
     modifier onlyEOA() {
         if (tx.origin != msg.sender)
@@ -38,10 +40,13 @@ contract ApeMinerNFT is ERC721A, Ownable, ReentrancyGuard {
         _;
     }
 
-    constructor(string memory baseURI, uint256 price)
-        ERC721A("ApeMinerNFT", "ABN")
-    {
+    constructor(
+        string memory baseURI,
+        string memory coverURI,
+        uint256 price
+    ) ERC721A("ApeMinerNFT", "ABN") {
         _baseTokenURI = baseURI;
+        _coverURI = coverURI;
         _price = price;
     }
 
@@ -67,7 +72,8 @@ contract ApeMinerNFT is ERC721A, Ownable, ReentrancyGuard {
     {
         if (!isPublicSaleActive()) revert SaleNotStarted();
         if (totalSupply() + quantity > MAX_SUPPLY) revert AmountExceedsSupply();
-        if (quantity > MAX_EACH_ADDRESS) revert AmountExceedsEach();
+        if (balanceOf(msg.sender) + quantity > MAX_EACH_ADDRESS)
+            revert AmountExceedsEach();
 
         uint256 cost = _price.mul(quantity);
         if (msg.value < cost) revert InsufficientPayment();
@@ -106,8 +112,7 @@ contract ApeMinerNFT is ERC721A, Ownable, ReentrancyGuard {
     {
         require(_exists(tokenId), "nonexistent token");
 
-        if (!isShowTimeStart())
-            return string(abi.encodePacked(_baseURI(), "cover.json"));
+        if (!isShowTimeStart()) return _coverURI;
         else
             return
                 string(
@@ -146,6 +151,16 @@ contract ApeMinerNFT is ERC721A, Ownable, ReentrancyGuard {
         _baseTokenURI = uri;
         emit baseUIRChanged(uri);
         return _baseTokenURI;
+    }
+
+    function setCoverNew(string memory uri)
+        external
+        onlyOwner
+        returns (string memory)
+    {
+        _coverURI = uri;
+        emit coverUIRChanged(uri);
+        return _coverURI;
     }
 
     // Team/Partnerships & Community

@@ -4,34 +4,30 @@ pragma solidity ^0.8.4;
 
 import "./ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 error OnlyExternallyOwnedAccountsAllowed();
-error SaleNotStarted();
 error AmountExceedsSupply();
-error InsufficientPayment();
-error NeedRecommender(address);
+error UserHadOne();
+error SaleNotStarted();
 
-contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
-    using SafeMath for uint256;
-
-    uint256 public constant MAX_SUPPLY = 3000;
+contract ApeMinerAirdrop is ERC721A, Ownable {
+    uint256 public constant MAX_SUPPLY = 20000;
     uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
-    uint256 private _publicSaleStart = FAR_FUTURE;
+    uint256 private _airdropStart = FAR_FUTURE;
     uint256 private _showTimeStart = FAR_FUTURE;
+
     string private _baseTokenURI;
+    string private _coverURI;
 
-    uint256 private _price;
-    uint8 private _share;
-    mapping(address => bool) members;
+    mapping(address => bool) users;
 
-    event publicSaleStart();
-    event publicSalePaused();
-    event baseUIRChanged(string);
+    event airdropStart();
+    event airdropPaused();
     event showTimeNotStart();
     event showTimeStart();
+    event baseUIRChanged(string);
+    event coverChanged(string);
 
     modifier onlyEOA() {
         if (tx.origin != msg.sender)
@@ -39,52 +35,29 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
         _;
     }
 
-    constructor(
-        string memory baseURI,
-        uint256 price,
-        uint8 share
-    ) ERC721A("ApeMinerBodyNFT", "ABN") {
+    constructor(string memory baseURI, string memory coverURI)
+        ERC721A("AprMinerAirdrop", "AMA")
+    {
         _baseTokenURI = baseURI;
-        _price = price;
-        require(share >= 0 && share <= 100, "share must between 0 and 100");
-        _share = share;
-        members[msg.sender] = true;
+        _coverURI = coverURI;
     }
 
-    // publicSale
-
-    function isPublicSaleActive() public view returns (bool) {
-        return block.timestamp > _publicSaleStart;
+    function isairdropActive() public view returns (bool) {
+        return block.timestamp > _airdropStart;
     }
 
     function isShowTimeStart() public view returns (bool) {
         return block.timestamp > _showTimeStart;
     }
 
-    function publicSaleMint(address recommender, uint256 quantity)
-        external
-        payable
-        onlyEOA
-        nonReentrant
-    {
-        if (!isPublicSaleActive()) revert SaleNotStarted();
-        if (totalSupply() + quantity > MAX_SUPPLY) revert AmountExceedsSupply();
-        if (recommender == address(0)) recommender = owner();
-        if (!members[recommender]) revert NeedRecommender(recommender);
+    // Airdrop
 
-        uint256 cost = _price.mul(quantity);
-        if (msg.value < cost) revert InsufficientPayment();
-
-        _safeMint(msg.sender, quantity);
-
-        uint256 split = cost.mul(_share).div(100);
-        payable(recommender).transfer(split);
-        members[msg.sender] = true;
-
-        // Refund overpayment
-        if (msg.value > cost) {
-            payable(msg.sender).transfer(msg.value.sub(cost));
-        }
+    function airdropMint() external onlyEOA {
+        if (!isairdropActive()) revert SaleNotStarted();
+        if (totalSupply() >= MAX_SUPPLY) revert AmountExceedsSupply();
+        if (users[msg.sender]) revert UserHadOne();
+        _safeMint(msg.sender, 1);
+        users[msg.sender] = true;
     }
 
     // METADATA
@@ -113,8 +86,7 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
     {
         require(_exists(tokenId), "nonexistent token");
 
-        if (!isShowTimeStart())
-            return string(abi.encodePacked(_baseURI(), "cover.json"));
+        if (!isShowTimeStart()) return _coverURI;
         else
             return
                 string(
@@ -123,28 +95,6 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
     }
 
     // OWNERS + HELPERS
-
-    function startPublicSale() external onlyOwner {
-        _publicSaleStart = block.timestamp;
-
-        emit publicSaleStart();
-    }
-
-    function pausePublicSale() external onlyOwner {
-        _publicSaleStart = FAR_FUTURE;
-        emit publicSalePaused();
-    }
-
-    function startShowTime() external onlyOwner {
-        _showTimeStart = block.timestamp;
-        emit showTimeStart();
-    }
-
-    function pauseShowTime() external onlyOwner {
-        _showTimeStart = FAR_FUTURE;
-        emit showTimeNotStart();
-    }
-
     function setURInew(string memory uri)
         external
         onlyOwner
@@ -155,15 +105,35 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
         return _baseTokenURI;
     }
 
-    // Team/Partnerships & Community
-    function marketingMint(uint256 quantity) external onlyOwner {
-        if (totalSupply() + quantity > MAX_SUPPLY) revert AmountExceedsSupply();
-
-        _safeMint(owner(), quantity);
+    function setCoverNew(string memory uri)
+        external
+        onlyOwner
+        returns (string memory)
+    {
+        _coverURI = uri;
+        emit coverChanged(uri);
+        return _coverURI;
     }
 
-    function withdraw() external onlyOwner {
-        payable(owner()).transfer(address(this).balance);
+    function startAirdrop() external onlyOwner {
+        _airdropStart = block.timestamp;
+
+        emit airdropStart();
+    }
+
+    function pauseAirdrop() external onlyOwner {
+        _airdropStart = FAR_FUTURE;
+        emit airdropPaused();
+    }
+
+    function startShowTime() external onlyOwner {
+        _showTimeStart = block.timestamp;
+        emit showTimeStart();
+    }
+
+    function pauseShowTime() external onlyOwner {
+        _showTimeStart = FAR_FUTURE;
+        emit showTimeNotStart();
     }
 
     /**

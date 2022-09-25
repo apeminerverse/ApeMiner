@@ -1,0 +1,17 @@
+{
+    "name": "ApeMinerAirdrop",
+    "symbol": "AMA",
+    "description": "This is the limited edition props of Miner Ape, which will be airdroped to all the communities. In the future, there will be additional benefits after this item is combined with Miner Ape NFT.",
+    "animation_url": "https://bafybeidieo3wt7tvai7jduopardpi2bv6kzhpkazdllbdiqdl6g4feuzsm.ipfs.nftstorage.link/",
+    "image": "ipfs://bafybeicpdx4537wgggpy72ts3r4dl2dvx3nzlkv3bacqlmc7fnx2u7coqq",
+    "attributes": [
+        {
+            "trait_type": "Date",
+            "value": "2022-10-01"
+        },
+        {
+            "trait_type": "In-memory",
+            "value": "ApeMiner Yacht Party 2022"
+        }
+    ]
+}
