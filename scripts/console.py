@@ -1,6 +1,8 @@
 from scripts.functions import *
 
-url = 'https://bafybeid33sqhohn67wwlotseh4hczouzyxlllhevsipj5qseod7q56xohm.ipfs.nftstorage.link/'
+yart_airdrop_ipfs = 'https://nftstorage.link/ipfs/bafkreihmdyd4vwz2or5qdcibauvkunah6dvkabya7cj5maz5lixtbw44bm'
+open_airdrop_ipfs = 'https://nftstorage.link/ipfs/bafkreier72vel7fvsonaalmvpm7pyiurbec45xy6oizmmyruyde6zaidie'
+apeminer_ipfs = 'https://nftstorage.link/ipfs/bafkreiamehcsywzt3767uswrombs2qexunn2edlwxurzhduv4j27wdicma'
 
 
 def main():
@@ -11,12 +13,11 @@ def main():
 
     try:
         if active_network in LOCAL_NETWORKS:
-            nft = YachtPartyAirdrop.deploy(url, addr(admin))
-
-            # abiEncode(nft)
-
-            nft.startAirdrop(addr(admin))
-            nft.airdropMint(addr(creator))
+            pass
+        if active_network in TEST_NETWORKS:
+            yarcht_party_nft = YachtPartyAirdrop[-1]
+            public_airdrop_nft = ApeMinerAirdrop[-1]
+            sale_nft = ApeMinerNFT[-1]
 
     except Exception:
         console.print_exception()

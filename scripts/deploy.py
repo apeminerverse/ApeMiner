@@ -1,6 +1,6 @@
 from scripts.functions import *
-yart_airdrop_ipfs = 'https://nftstorage.link/ipfs/bafkreihmdyd4vwz2or5qdcibauvkunah6dvkabya7cj5maz5lixtbw44bm'
-open_airdrop_ipfs = 'https://nftstorage.link/ipfs/bafkreier72vel7fvsonaalmvpm7pyiurbec45xy6oizmmyruyde6zaidie'
+yart_airdrop_ipfs = 'https://nftstorage.link/ipfs/bafkreihlcthmzv33ykusag7qqo7p4hhj27cd7nw5b3o6akg7bwlfzifdxi'
+open_airdrop_ipfs = 'https://nftstorage.link/ipfs/bafkreieg5pevnrjjjlialkigmogahpmkltdjwuka6rwyosbydqigbdv7ke'
 apeminer_ipfs = 'https://nftstorage.link/ipfs/bafkreiamehcsywzt3767uswrombs2qexunn2edlwxurzhduv4j27wdicma'
 
 
@@ -17,23 +17,25 @@ def main():
                                                             addr(admin))
             apeminer_airdrop = ApeMinerAirdrop.deploy("", open_airdrop_ipfs,
                                                       addr(admin))
-            apuminer_mint = ApeMinerNFT.deploy("", apeminer_ipfs,   0.5*10**18,
-                                               addr(admin))
+            sale_nft = ApeMinerNFT.deploy("", apeminer_ipfs,   0.5*10**18,
+                                          addr(admin))
         if active_network in TEST_NETWORKS:
-            yarcht_party_airdrop = YachtPartyAirdrop.deploy(yart_airdrop_ipfs,
-                                                            addr(admin))
-            apeminer_airdrop = ApeMinerAirdrop.deploy("", open_airdrop_ipfs,
-                                                      addr(admin))
-            apuminer_mint = ApeMinerNFT.deploy("", apeminer_ipfs, 0.5*10**18,
-                                               addr(admin))
+            # yarcht_party_airdrop = YachtPartyAirdrop.deploy(yart_airdrop_ipfs,
+            #                                                 addr(admin))
+            # apeminer_airdrop = ApeMinerAirdrop.deploy("", open_airdrop_ipfs,
+            #                                           addr(admin))
+            sale_nft = ApeMinerNFT.deploy("", apeminer_ipfs, 0.005*10**18,
+                                          addr(admin))
+            tx = sale_nft.startPublicSale(addr(admin))
+            tx.wait(1)
 
         if active_network in REAL_NETWORKS:
-            yarcht_party_airdrop = YachtPartyAirdrop.deploy(yart_airdrop_ipfs,
-                                                            addr(admin), publish_source=True)
-            apeminer_airdrop = ApeMinerAirdrop.deploy("", open_airdrop_ipfs,
-                                                      addr(admin), publish_source=True)
-            apuminer_mint = ApeMinerNFT.deploy("", apeminer_ipfs, 0.5*10**18,
-                                               addr(admin), publish_source=True)
+            # yarcht_party_airdrop = YachtPartyAirdrop.deploy(yart_airdrop_ipfs,
+            #                                                 addr(admin), publish_source=True)
+            # apeminer_airdrop = ApeMinerAirdrop.deploy("", open_airdrop_ipfs,
+            #                                           addr(admin), publish_source=True)
+            sale_nft = ApeMinerNFT.deploy("", apeminer_ipfs, 0.5*10**18,
+                                          addr(admin), publish_source=True)
 
     except Exception:
         console.print_exception()

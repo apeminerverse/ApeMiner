@@ -16,7 +16,7 @@ error InsufficientPayment();
 contract ApeMinerNFT is ERC721A, Ownable, ReentrancyGuard {
     using SafeMath for uint256;
 
-    uint256 public constant MAX_SUPPLY = 3000;
+    uint256 public constant MAX_SUPPLY = 10000;
     uint256 public constant MAX_EACH_ADDRESS = 5;
     uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
@@ -101,6 +101,10 @@ contract ApeMinerNFT is ERC721A, Ownable, ReentrancyGuard {
         return tokenIds;
     }
 
+    function numberMinted(address owner) external view returns (uint256) {
+        return _numberMinted(owner);
+    }
+
     // DISPLAY
 
     function tokenURI(uint256 tokenId)
@@ -163,6 +167,10 @@ contract ApeMinerNFT is ERC721A, Ownable, ReentrancyGuard {
         return _coverURI;
     }
 
+    function setPrice(uint256 price) external onlyOwner {
+        _price = price;
+    }
+
     // Team/Partnerships & Community
     function marketingMint(uint256 quantity) external onlyOwner {
         if (totalSupply() + quantity > MAX_SUPPLY) revert AmountExceedsSupply();
@@ -172,6 +180,19 @@ contract ApeMinerNFT is ERC721A, Ownable, ReentrancyGuard {
 
     function withdraw() external onlyOwner {
         payable(owner()).transfer(address(this).balance);
+    }
+
+    function _beforeTokenTransfers(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256
+    ) internal virtual override {
+        if (
+            to != address(0) && from != address(0) && totalSupply() < MAX_SUPPLY
+        ) revert("Cannot transfer before sould out");
+
+        super._beforeTokenTransfers(from, to, tokenId, 1);
     }
 
     /**
