@@ -10,7 +10,7 @@ error AmountExceedsSupply();
 error UserHadOne();
 error SaleNotStarted();
 
-contract ApeMinerAirdrop is ERC721A, Ownable {
+contract ApeMinerTreasureChest is ERC721A, Ownable {
     uint256 public constant MAX_SUPPLY = 20000;
     uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
@@ -42,7 +42,7 @@ contract ApeMinerAirdrop is ERC721A, Ownable {
         _coverURI = coverURI;
     }
 
-    function isairdropActive() public view returns (bool) {
+    function isAirdropActive() public view returns (bool) {
         return block.timestamp > _airdropStart;
     }
 
@@ -52,8 +52,8 @@ contract ApeMinerAirdrop is ERC721A, Ownable {
 
     // Airdrop
 
-    function airdropMint() external onlyEOA {
-        if (!isairdropActive()) revert SaleNotStarted();
+    function mint() external onlyEOA {
+        if (!isAirdropActive()) revert SaleNotStarted();
         if (totalSupply() >= MAX_SUPPLY) revert AmountExceedsSupply();
         if (users[msg.sender]) revert UserHadOne();
         _safeMint(msg.sender, 1);
@@ -87,11 +87,9 @@ contract ApeMinerAirdrop is ERC721A, Ownable {
         require(_exists(tokenId), "nonexistent token");
 
         if (!isShowTimeStart()) return _coverURI;
-        else
-            return
-                string(
-                    abi.encodePacked(_baseURI(), _toString(tokenId), ".json")
-                );
+
+        return
+            string(abi.encodePacked(_baseURI(), _toString(tokenId), ".json"));
     }
 
     // OWNERS + HELPERS
