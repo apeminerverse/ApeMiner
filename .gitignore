@@ -6,4 +6,3 @@ build/
 reports/
 meta/
 *_flat/
-*.json
