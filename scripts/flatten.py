@@ -12,18 +12,18 @@ def main():
     admin, creator, consumer, iwan = get_accounts(active_network)
 
     try:
-        yarcht_party_airdrop = YachtPartyAirdrop.deploy(yart_airdrop_ipfs,
-                                                        addr(admin))
-        apeminer_airdrop = ApeMinerAirdrop.deploy("", open_airdrop_ipfs,
-                                                  addr(admin))
-        sale_nft = ApeMinerNFT.deploy("", apeminer_ipfs,   0.5*10**18,
-                                      addr(admin))
-        flat_contract('YachtPartyAirdrop',
-                      YachtPartyAirdrop.get_verification_info())
-        flat_contract('ApeMinerAirdrop',
-                      ApeMinerAirdrop.get_verification_info())
-        flat_contract('ApeMinerNFT',
-                      ApeMinerNFT.get_verification_info())
+        yarcht_party_airdrop = ApeMinerInfinityGauntlet.deploy(yart_airdrop_ipfs,
+                                                               addr(admin))
+        # apeminer_airdrop = ApeMinerAirdrop.deploy("", open_airdrop_ipfs,
+        #                                           addr(admin))
+        # sale_nft = ApeMinerNFT.deploy("", apeminer_ipfs,   0.5*10**18,
+        #                               addr(admin))
+        flat_contract('ApeMinerInfinityGauntlet',
+                      ApeMinerInfinityGauntlet.get_verification_info())
+        # flat_contract('ApeMinerAirdrop',
+        #               ApeMinerAirdrop.get_verification_info())
+        # flat_contract('ApeMinerNFT',
+        #               ApeMinerNFT.get_verification_info())
 
     except Exception:
         console.print_exception()

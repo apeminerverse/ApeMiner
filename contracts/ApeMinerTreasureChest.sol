@@ -28,6 +28,7 @@ contract ApeMinerTreasureChest is ERC721A, Ownable {
     event showTimeStart();
     event baseUIRChanged(string);
     event coverChanged(string);
+    event newMint(address, uint256);
 
     modifier onlyEOA() {
         if (tx.origin != msg.sender)
@@ -56,6 +57,8 @@ contract ApeMinerTreasureChest is ERC721A, Ownable {
         if (!isAirdropActive()) revert SaleNotStarted();
         if (totalSupply() >= MAX_SUPPLY) revert AmountExceedsSupply();
         if (users[msg.sender]) revert UserHadOne();
+        emit newMint(msg.sender, totalSupply());
+
         _safeMint(msg.sender, 1);
         users[msg.sender] = true;
     }

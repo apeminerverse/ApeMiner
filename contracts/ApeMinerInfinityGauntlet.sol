@@ -23,6 +23,7 @@ contract ApeMinerInfinityGauntlet is ERC721A, Ownable {
     event AirdropStart();
     event AirdropPaused();
     event baseUIRChanged(string);
+    event newMint(address indexed _to, uint256 indexed _tokenId);
 
     constructor(string memory baseURI)
         ERC721A("AprMinerYachtPartyAirdrop", "AYA")
@@ -32,14 +33,17 @@ contract ApeMinerInfinityGauntlet is ERC721A, Ownable {
 
     // Airdrop
 
-    function airdropMint(address[] memory _to) external onlyOwner {
+    function mint(address[] memory _to) external onlyOwner {
         if (totalSupply() + _to.length > MAX_SUPPLY)
             revert AmountExceedsSupply();
 
         for (uint256 i = 0; i < _to.length; i++) {
-            if (users[_to[i]]) revert UserHadOne();
-            _safeMint(_to[i], 1);
-            users[_to[i]] = true;
+            if (!users[_to[i]]) {
+                emit newMint(_to[i], totalSupply());
+
+                _safeMint(_to[i], 1);
+                users[_to[i]] = true;
+            }
         }
     }
 

@@ -13,27 +13,27 @@ def main():
     try:
         if active_network in LOCAL_NETWORKS:
             # nft = YachtPartyAirdrop.deploy(url, '', addr(admin))
-            yarcht_party_airdrop = YachtPartyAirdrop.deploy(yart_airdrop_ipfs,
+            yarcht_party_airdrop = ApeMinerInfinityGauntlet.deploy(yart_airdrop_ipfs,
+                                                                   addr(admin))
+            apeminer_airdrop = ApeMinerTreasureChest.deploy("", open_airdrop_ipfs,
                                                             addr(admin))
-            apeminer_airdrop = ApeMinerAirdrop.deploy("", open_airdrop_ipfs,
-                                                      addr(admin))
             sale_nft = ApeMinerNFT.deploy("", apeminer_ipfs,   0.5*10**18,
                                           addr(admin))
         if active_network in TEST_NETWORKS:
-            # yarcht_party_airdrop = YachtPartyAirdrop.deploy(yart_airdrop_ipfs,
-            #                                                 addr(admin))
-            # apeminer_airdrop = ApeMinerAirdrop.deploy("", open_airdrop_ipfs,
-            #                                           addr(admin))
+            yarcht_party_airdrop = ApeMinerInfinityGauntlet.deploy(yart_airdrop_ipfs,
+                                                                   addr(admin))
+            apeminer_airdrop = ApeMinerTreasureChest.deploy("", open_airdrop_ipfs,
+                                                            addr(admin))
             sale_nft = ApeMinerNFT.deploy("", apeminer_ipfs, 0.005*10**18,
                                           addr(admin))
             tx = sale_nft.startPublicSale(addr(admin))
             tx.wait(1)
 
         if active_network in REAL_NETWORKS:
-            yarcht_party_airdrop = YachtPartyAirdrop.deploy(yart_airdrop_ipfs,
+            yarcht_party_airdrop = ApeMinerInfinityGauntlet.deploy(yart_airdrop_ipfs,
+                                                                   addr(admin), publish_source=True)
+            apeminer_airdrop = ApeMinerTreasureChest.deploy("", open_airdrop_ipfs,
                                                             addr(admin), publish_source=True)
-            # apeminer_airdrop = ApeMinerAirdrop.deploy("", open_airdrop_ipfs,
-            #                                           addr(admin), publish_source=True)
             # sale_nft = ApeMinerNFT.deploy("", apeminer_ipfs, 0.5*10**18,
             #                               addr(admin), publish_source=True)
 

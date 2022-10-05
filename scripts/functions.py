@@ -18,6 +18,20 @@ DEPLOYED_ADDR = {  # Deployed address
 }
 
 
+def gen_accounts(number, group):
+    # generate number of accounts and save to group directory
+    info = ''
+
+    if not os.path.exists(group):
+        os.mkdir(group)
+    for i in range(number):
+        account = accounts.add()
+        print(account.private_key)
+        account.save(group+"/"+str(i), overwrite=True, password="Iwan9506")
+        info += '"' + str(account) + '",'
+    return info
+
+
 def get_accounts(active_network):
     if active_network in LOCAL_NETWORKS:
         admin = accounts.add(config['wallets']['admin'])

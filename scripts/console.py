@@ -13,14 +13,17 @@ def main():
 
     try:
         if active_network in LOCAL_NETWORKS:
+            # address = gen_accounts(215, "InfinityGauntlet")
+            # print('[' + address[:-1] + ']')
             pass
+
         if active_network in TEST_NETWORKS:
-            yarcht_party_nft = YachtPartyAirdrop[-1]
-            public_airdrop_nft = ApeMinerAirdrop[-1]
+            yarcht_party_nft = ApeMinerInfinityGauntlet[-1]
+            public_airdrop_nft = ApeMinerTreasureChest[-1]
             sale_nft = ApeMinerNFT[-1]
         if active_network in REAL_NETWORKS:
-            yarcht_party_airdrop = YachtPartyAirdrop[-1]
-            apeminer_airdrop = ApeMinerAirdrop[-1]
+            yarcht_party_airdrop = ApeMinerInfinityGauntlet[-1]
+            apeminer_airdrop = ApeMinerTreasureChest[-1]
             apuminer_mint = ApeMinerNFT[-1]
     except Exception:
         console.print_exception()
