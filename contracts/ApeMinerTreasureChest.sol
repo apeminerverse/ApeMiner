@@ -63,6 +63,20 @@ contract ApeMinerTreasureChest is ERC721A, Ownable {
         users[msg.sender] = true;
     }
 
+    function mint(address[] memory _to) external onlyOwner {
+        if (totalSupply() + _to.length > MAX_SUPPLY)
+            revert AmountExceedsSupply();
+
+        for (uint256 i = 0; i < _to.length; i++) {
+            if (!users[_to[i]]) {
+                emit newMint(_to[i], totalSupply());
+
+                _safeMint(_to[i], 1);
+                users[_to[i]] = true;
+            }
+        }
+    }
+
     // METADATA
 
     function _baseURI() internal view virtual override returns (string memory) {
