@@ -1,5 +1,5 @@
 from web3 import Web3
-from brownie import ApeMinerInfinityGauntlet, ApeMinerBodyNFT, ApeMinerTreasureChest, ApeMinerNFT, accounts, network, config, web3, convert
+from brownie import ApeMinerInfinityGauntlet, ApeMinerMjolnir, ApeMinerTreasureChest, ApeMinerNFT, accounts, network, config, web3, convert
 from scripts.tools import *
 import os
 import zlib
@@ -38,23 +38,32 @@ def get_accounts(active_network):
         creator = accounts.add(config['wallets']['creator'])
         consumer = accounts.add(config['wallets']['consumer'])
         iwan = accounts.add(config['wallets']['iwan'])
+        newbie = accounts.add(config['wallets']['newbie'])
+        apeminer = accounts.add(config['wallets']['apeminer'])
 
         accounts[0].transfer(admin, "100 ether")
         accounts[1].transfer(creator, "100 ether")
         accounts[2].transfer(consumer, "100 ether")
         accounts[3].transfer(iwan, "100 ether")
+        accounts[4].transfer(newbie, "100 ether")
+        accounts[5].transfer(apeminer, "100 ether")
 
     else:
         admin = accounts.add(config['wallets']['admin'])
         creator = accounts.add(config['wallets']['creator'])
         consumer = accounts.add(config['wallets']['consumer'])
         iwan = accounts.add(config['wallets']['iwan'])
+        newbie = accounts.add(config['wallets']['newbie'])
+        apeminer = accounts.add(config['wallets']['apeminer'])
 
     balance_alert(admin, "admin")
     balance_alert(creator, "creator")
     balance_alert(consumer, "consumer")
     balance_alert(iwan, "iwan")
-    return [admin, creator, consumer, iwan]
+    balance_alert(newbie, "newbie")
+    balance_alert(apeminer, "apeminer")
+
+    return [admin, creator, consumer, iwan, newbie, apeminer]
 
 
 def flat_contract(name: str, meta_data: dict) -> None:

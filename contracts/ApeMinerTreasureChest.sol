@@ -28,7 +28,6 @@ contract ApeMinerTreasureChest is ERC721A, Ownable {
     event showTimeStart();
     event baseUIRChanged(string);
     event coverChanged(string);
-    event newMint(address, uint256);
 
     modifier onlyEOA() {
         if (tx.origin != msg.sender)
@@ -37,7 +36,7 @@ contract ApeMinerTreasureChest is ERC721A, Ownable {
     }
 
     constructor(string memory baseURI, string memory coverURI)
-        ERC721A("AprMinerAirdrop", "AMA")
+        ERC721A("ApeMinerTreasureChest", "AMTC")
     {
         _baseTokenURI = baseURI;
         _coverURI = coverURI;
@@ -57,7 +56,6 @@ contract ApeMinerTreasureChest is ERC721A, Ownable {
         if (!isAirdropActive()) revert SaleNotStarted();
         if (totalSupply() >= MAX_SUPPLY) revert AmountExceedsSupply();
         if (users[msg.sender]) revert UserHadOne();
-        emit newMint(msg.sender, totalSupply());
 
         _safeMint(msg.sender, 1);
         users[msg.sender] = true;
@@ -69,8 +67,6 @@ contract ApeMinerTreasureChest is ERC721A, Ownable {
 
         for (uint256 i = 0; i < _to.length; i++) {
             if (!users[_to[i]]) {
-                emit newMint(_to[i], totalSupply());
-
                 _safeMint(_to[i], 1);
                 users[_to[i]] = true;
             }

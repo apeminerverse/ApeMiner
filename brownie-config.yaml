@@ -65,3 +65,5 @@ wallets:
     creator: ${CREATOR_PRIVATE_KEY}
     consumer: ${CONSUMER_PRIVATE_KEY}
     iwan: ${IWANCAO_PRIVATE_KEY}
+    newbie: ${NEWBIE_PRIVATE_KEY}
+    apeminer: ${APEMINER_PRIVATE_KEY}
