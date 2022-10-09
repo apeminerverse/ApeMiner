@@ -2,14 +2,15 @@
 
 pragma solidity ^0.8.4;
 
-import "./ERC721A.sol";
+// import "./ERC721A.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 error AmountExceedsSupply();
 
-contract ApeMinerMjolnir is ERC721A, Ownable {
+contract ApeMinerMjolnir is ERC721Enumerable, Ownable {
     using Strings for uint256;
 
     uint256 public constant MAX_SUPPLY = 3000;
@@ -18,7 +19,7 @@ contract ApeMinerMjolnir is ERC721A, Ownable {
 
     event baseUIRChanged(string);
 
-    constructor(string memory baseURI) ERC721A("ApeMinerMjolnir", "AMM") {
+    constructor(string memory baseURI) ERC721("ApeMinerMjolnir", "AMM") {
         _baseTokenURI = baseURI;
     }
 
@@ -27,15 +28,12 @@ contract ApeMinerMjolnir is ERC721A, Ownable {
     function mint(address[] memory _to) external onlyOwner {
         if (totalSupply() + _to.length > MAX_SUPPLY)
             revert AmountExceedsSupply();
-
-        for (uint256 i = 0; i < _to.length; i++) {
-            _safeMint(_to[i], 1);
-        }
+        for (uint256 i = 0; i < _to.length; i++) _mint(_to[i], totalSupply());
     }
 
     function mint(address _to, uint256 _amount) external onlyOwner {
         if (totalSupply() + _amount > MAX_SUPPLY) revert AmountExceedsSupply();
-        _safeMint(_to, _amount);
+        for (uint256 i = 0; i < _amount; i++) _mint(_to, totalSupply());
     }
 
     // METADATA

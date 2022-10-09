@@ -2,7 +2,8 @@
 
 pragma solidity ^0.8.4;
 
-import "./ERC721A.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 error OnlyExternallyOwnedAccountsAllowed();
@@ -10,7 +11,7 @@ error AmountExceedsSupply();
 error UserHadOne();
 error SaleNotStarted();
 
-contract ApeMinerTreasureChest is ERC721A, Ownable {
+contract ApeMinerTreasureChest is ERC721Enumerable, ERC721Burnable, Ownable {
     uint256 public constant MAX_SUPPLY = 20000;
     uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
@@ -36,7 +37,7 @@ contract ApeMinerTreasureChest is ERC721A, Ownable {
     }
 
     constructor(string memory baseURI, string memory coverURI)
-        ERC721A("ApeMinerTreasureChest", "AMTC")
+        ERC721("ApeMinerTreasureChest", "AMTC")
     {
         _baseTokenURI = baseURI;
         _coverURI = coverURI;
@@ -57,7 +58,7 @@ contract ApeMinerTreasureChest is ERC721A, Ownable {
         if (totalSupply() >= MAX_SUPPLY) revert AmountExceedsSupply();
         if (users[msg.sender]) revert UserHadOne();
 
-        _safeMint(msg.sender, 1);
+        _safeMint(msg.sender, totalSupply());
         users[msg.sender] = true;
     }
 
@@ -67,7 +68,7 @@ contract ApeMinerTreasureChest is ERC721A, Ownable {
 
         for (uint256 i = 0; i < _to.length; i++) {
             if (!users[_to[i]]) {
-                _safeMint(_to[i], 1);
+                _safeMint(_to[i], totalSupply());
                 users[_to[i]] = true;
             }
         }
@@ -145,6 +146,29 @@ contract ApeMinerTreasureChest is ERC721A, Ownable {
     function pauseShowTime() external onlyOwner {
         _showTimeStart = FAR_FUTURE;
         emit showTimeNotStart();
+    }
+
+    // The following functions are overrides required by Solidity.
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override(ERC721, ERC721Enumerable) {
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     */
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC721, ERC721Enumerable)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 
     /**
