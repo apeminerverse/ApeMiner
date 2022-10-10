@@ -8,10 +8,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 error OnlyExternallyOwnedAccountsAllowed();
 error AmountExceedsSupply();
-error UserHadOne();
 error SaleNotStarted();
 
-contract ApeMinerTreasureChest is ERC721Enumerable, ERC721Burnable, Ownable {
+contract ApeMinerTreasureChestCN is ERC721Enumerable, ERC721Burnable, Ownable {
     uint256 public constant MAX_SUPPLY = 20000;
     uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
@@ -21,20 +20,12 @@ contract ApeMinerTreasureChest is ERC721Enumerable, ERC721Burnable, Ownable {
     string private _baseTokenURI;
     string private _coverURI;
 
-    mapping(address => bool) users;
-
     event airdropStart();
     event airdropPaused();
     event showTimeNotStart();
     event showTimeStart();
     event baseUIRChanged(string);
     event coverChanged(string);
-
-    modifier onlyEOA() {
-        if (tx.origin != msg.sender)
-            revert OnlyExternallyOwnedAccountsAllowed();
-        _;
-    }
 
     constructor(string memory baseURI, string memory coverURI)
         ERC721("ApeMinerTreasureChest", "AMTC")
@@ -53,24 +44,12 @@ contract ApeMinerTreasureChest is ERC721Enumerable, ERC721Burnable, Ownable {
 
     // Airdrop
 
-    function mint() external onlyEOA {
-        if (!isAirdropActive()) revert SaleNotStarted();
-        if (totalSupply() >= MAX_SUPPLY) revert AmountExceedsSupply();
-        if (users[msg.sender]) revert UserHadOne();
-
-        _safeMint(msg.sender, totalSupply());
-        users[msg.sender] = true;
-    }
-
     function mint(address[] memory _to) external onlyOwner {
         if (totalSupply() + _to.length > MAX_SUPPLY)
             revert AmountExceedsSupply();
 
         for (uint256 i = 0; i < _to.length; i++) {
-            if (!users[_to[i]]) {
-                _safeMint(_to[i], totalSupply());
-                users[_to[i]] = true;
-            }
+            _safeMint(_to[i], totalSupply());
         }
     }
 
@@ -116,7 +95,6 @@ contract ApeMinerTreasureChest is ERC721Enumerable, ERC721Burnable, Ownable {
             "ERC721: caller is not token owner, not admin or approved"
         );
         _burn(tokenId);
-        users[ownerOf(tokenId)] = false;
     }
 
     function setURInew(string memory uri)

@@ -30,6 +30,8 @@ def main():
             #                                                        addr(admin))
             apeminer_airdrop = ApeMinerTreasureChest.deploy("", open_airdrop_ipfs,
                                                             addr(apeminer))
+            apeminer_airdrop_cn = ApeMinerTreasureChestCN.deploy("", open_airdrop_ipfs,
+                                                                 addr(apeminer))
             # sale_nft = ApeMinerNFT.deploy("", apeminer_ipfs, 0.005*10**18,
             #                               addr(admin))
             # tx = sale_nft.startPublicSale(addr(admin))
