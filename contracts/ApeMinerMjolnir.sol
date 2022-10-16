@@ -3,14 +3,14 @@
 pragma solidity ^0.8.4;
 
 // import "./ERC721A.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "./ERC721Psi/ERC721Psi.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 error AmountExceedsSupply();
 
-contract ApeMinerMjolnir is ERC721Enumerable, Ownable {
+contract ApeMinerMjolnir is ERC721Psi, Ownable {
     using Strings for uint256;
 
     uint256 public constant MAX_SUPPLY = 3000;
@@ -19,7 +19,7 @@ contract ApeMinerMjolnir is ERC721Enumerable, Ownable {
 
     event baseUIRChanged(string);
 
-    constructor(string memory baseURI) ERC721("ApeMinerMjolnir", "AMM") {
+    constructor(string memory baseURI) ERC721Psi("ApeMinerMjolnir", "AMM") {
         _baseTokenURI = baseURI;
     }
 

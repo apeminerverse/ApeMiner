@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.4;
-
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "./ERC721Psi/extension/ERC721PsiBurnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 error OnlyExternallyOwnedAccountsAllowed();
@@ -11,7 +9,7 @@ error AmountExceedsSupply();
 error UserHadOne();
 error SaleNotStarted();
 
-contract ApeMinerTreasureChest is ERC721Enumerable, ERC721Burnable, Ownable {
+contract ApeMinerTreasureChest is ERC721PsiBurnable, Ownable {
     uint256 public constant MAX_SUPPLY = 20000;
     uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
@@ -37,7 +35,7 @@ contract ApeMinerTreasureChest is ERC721Enumerable, ERC721Burnable, Ownable {
     }
 
     constructor(string memory baseURI, string memory coverURI)
-        ERC721("ApeMinerTreasureChest", "AMTC")
+        ERC721Psi("ApeMinerTreasureChest", "AMTC")
     {
         _baseTokenURI = baseURI;
         _coverURI = coverURI;
@@ -108,7 +106,7 @@ contract ApeMinerTreasureChest is ERC721Enumerable, ERC721Burnable, Ownable {
 
     // OWNERS + HELPERS
 
-    function burn(uint256 tokenId) public virtual override {
+    function burn(uint256 tokenId) external {
         //solhint-disable-next-line max-line-length
         require(
             _msgSender() == owner() ||
@@ -158,29 +156,6 @@ contract ApeMinerTreasureChest is ERC721Enumerable, ERC721Burnable, Ownable {
     function pauseShowTime() external onlyOwner {
         _showTimeStart = FAR_FUTURE;
         emit showTimeNotStart();
-    }
-
-    // The following functions are overrides required by Solidity.
-
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId
-    ) internal override(ERC721, ERC721Enumerable) {
-        super._beforeTokenTransfer(from, to, tokenId);
-    }
-
-    /**
-     * @dev See {IERC165-supportsInterface}.
-     */
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        virtual
-        override(ERC721, ERC721Enumerable)
-        returns (bool)
-    {
-        return super.supportsInterface(interfaceId);
     }
 
     /**
