@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.4;
 
-import "./ERC721A.sol";
+import "./ERC721Psi/ERC721Psi.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
@@ -13,7 +13,7 @@ error AmountExceedsSupply();
 error UserHadOne();
 error MerkleTreeVerify();
 
-contract WhitelistAirdrop is ERC721A, Ownable {
+contract WhitelistAirdrop is ERC721Psi, Ownable {
     using Strings for uint256;
 
     uint256 public constant MAX_SUPPLY = 300;
@@ -36,7 +36,7 @@ contract WhitelistAirdrop is ERC721A, Ownable {
     }
 
     constructor(string memory baseURI, bytes32 merkleRoot)
-        ERC721A("AprMinerYachtPartyAirdrop", "AYA")
+        ERC721Psi("AprMinerAirdrop", "AMA")
     {
         _baseTokenURI = baseURI;
         _merkleRoot = merkleRoot;

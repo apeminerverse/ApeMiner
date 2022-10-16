@@ -1,8 +1,9 @@
 from scripts.functions import *
 
-yart_airdrop_ipfs = 'https://bafkreiardihwzjdajophatfgizv6xsfag2bnglqlo2rps77voa56pxedmu.ipfs.nftstorage.link/'
-open_airdrop_ipfs = 'https://nftstorage.link/ipfs/bafkreier72vel7fvsonaalmvpm7pyiurbec45xy6oizmmyruyde6zaidie'
-apeminer_ipfs = 'https://nftstorage.link/ipfs/bafkreiamehcsywzt3767uswrombs2qexunn2edlwxurzhduv4j27wdicma'
+yart_airdrop_ipfs = 'ipfs://bafybeigtbwecpthwzq4nj4gkc7tfv4c2v4adh26ndw5khboaq4sghqgcva'
+open_airdrop_ipfs = 'ipfs://bafkreihpaqicot6kjkpda676jp2poajzbbckgbc4ue67b6wnbremljxu3e'
+apeminer_ipfs = 'ipfs://bafkreiamehcsywzt3767uswrombs2qexunn2edlwxurzhduv4j27wdicma'
+mjolnir_ipfs = 'ipfs://bafybeidhaiyqhzlmwldshgdscirqb3lhdo33p24sk2n5cwf7jz7xjuqckq'
 
 
 def main():
@@ -19,15 +20,16 @@ def main():
             pass
 
         if active_network in TEST_NETWORKS:
-            # yarcht_party_nft = ApeMinerInfinityGauntlet[-1]
-            # public_airdrop_nft = ApeMinerTreasureChest[-1]
-            # sale_nft = ApeMinerNFT[-1]
+            # yarcht_party_airdrop = ApeMinerInfinityGauntlet[-1]
+            # apeminer_airdrop = ApeMinerTreasureChest[-1]
+            # apuminer_mint = ApeMinerNFT[-1]
+            apeminer_airdrop_cn = ApeMinerTreasureChestCN[-1]
             mjolnir = ApeMinerMjolnir[-1]
-            mjolnir.mint(apeminer, 1000, addr(apeminer))
         if active_network in REAL_NETWORKS:
             yarcht_party_airdrop = ApeMinerInfinityGauntlet[-1]
             apeminer_airdrop = ApeMinerTreasureChest[-1]
             apuminer_mint = ApeMinerNFT[-1]
+            apeminer_airdrop_cn = ApeMinerTreasureChestCN[-1]
             mjolnir = ApeMinerMjolnir[-1]
     except Exception:
         console.print_exception()

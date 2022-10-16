@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.4;
 
-import "./ERC721A.sol";
+import "./ERC721Psi/ERC721Psi.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -13,7 +13,7 @@ error AmountExceedsSupply();
 error InsufficientPayment();
 error NeedRecommender(address);
 
-contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
+contract ApeMinerBodyNFT is ERC721Psi, Ownable, ReentrancyGuard {
     using SafeMath for uint256;
 
     uint256 public constant MAX_SUPPLY = 3000;
@@ -43,7 +43,7 @@ contract ApeMinerBodyNFT is ERC721A, Ownable, ReentrancyGuard {
         string memory baseURI,
         uint256 price,
         uint8 share
-    ) ERC721A("ApeMinerBodyNFT", "ABN") {
+    ) ERC721Psi("ApeMinerBodyNFT", "ABN") {
         _baseTokenURI = baseURI;
         _price = price;
         require(share >= 0 && share <= 100, "share must between 0 and 100");

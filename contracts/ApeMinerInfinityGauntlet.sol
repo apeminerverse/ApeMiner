@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.4;
 
-import "./ERC721A.sol";
+import "./ERC721Psi/ERC721Psi.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -11,7 +11,7 @@ error OnlyExternallyOwnedAccountsAllowed();
 error AmountExceedsSupply();
 error UserHadOne();
 
-contract ApeMinerInfinityGauntlet is ERC721A, Ownable {
+contract ApeMinerInfinityGauntlet is ERC721Psi, Ownable {
     using Strings for uint256;
 
     uint256 public constant MAX_SUPPLY = 300;
@@ -26,7 +26,7 @@ contract ApeMinerInfinityGauntlet is ERC721A, Ownable {
     event newMint(address indexed _to, uint256 indexed _tokenId);
 
     constructor(string memory baseURI)
-        ERC721A("AprMinerYachtPartyAirdrop", "AYA")
+        ERC721Psi("ApeMinerInfinityGauntlet", "AIG")
     {
         _baseTokenURI = baseURI;
     }
