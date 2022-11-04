@@ -42,12 +42,12 @@ def main():
         if active_network in REAL_NETWORKS:
             # mjolnir = ApeMinerMjolnir.deploy(
             # mjolnir_ipfs, addr(apeminer), publish_source=True)
-            # yarcht_party_airdrop = ApeMinerInfinityGauntlet.deploy(yart_airdrop_ipfs,
-            #                                                        addr(admin), publish_source=True)
+            yarcht_party_airdrop = ApeMinerInfinityGauntlet.deploy(yart_airdrop_ipfs,
+                                                                   addr(apeminer), publish_source=True)
             # apeminer_airdrop = ApeMinerTreasureChest.deploy("", open_airdrop_ipfs,
             # addr(apeminer), publish_source=True)
-            apeminer_airdrop_cn = ApeMinerTreasureChestCN.deploy("", open_airdrop_ipfs,
-                                                                 addr(apeminer), publish_source=True)
+            # apeminer_airdrop_cn = ApeMinerTreasureChestCN.deploy("", open_airdrop_ipfs,
+            #                                                      addr(apeminer), publish_source=True)
             # # sale_nft = ApeMinerNFT.deploy("", apeminer_ipfs, 0.5*10**18,
             # #                               addr(admin), publish_source=True)
 

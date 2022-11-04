@@ -5,6 +5,7 @@ pragma solidity ^0.8.4;
 import "./ERC721Psi/ERC721Psi.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 error OnlyExternallyOwnedAccountsAllowed();
@@ -16,16 +17,15 @@ error NeedRecommender(address);
 contract ApeMinerBodyNFT is ERC721Psi, Ownable, ReentrancyGuard {
     using SafeMath for uint256;
 
-    uint256 public constant MAX_SUPPLY = 3000;
+    uint256 public constant MAX_SUPPLY = 1000;
     uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
     uint256 private _publicSaleStart = FAR_FUTURE;
     uint256 private _showTimeStart = FAR_FUTURE;
     string private _baseTokenURI;
+    bytes32 private _merkleRoot;
 
     uint256 private _price;
-    uint8 private _share;
-    mapping(address => bool) members;
 
     event publicSaleStart();
     event publicSalePaused();
@@ -42,13 +42,11 @@ contract ApeMinerBodyNFT is ERC721Psi, Ownable, ReentrancyGuard {
     constructor(
         string memory baseURI,
         uint256 price,
-        uint8 share
+        bytes32 root
     ) ERC721Psi("ApeMinerBodyNFT", "ABN") {
         _baseTokenURI = baseURI;
         _price = price;
-        require(share >= 0 && share <= 100, "share must between 0 and 100");
-        _share = share;
-        members[msg.sender] = true;
+        _merkleRoot = root;
     }
 
     // publicSale
@@ -61,7 +59,31 @@ contract ApeMinerBodyNFT is ERC721Psi, Ownable, ReentrancyGuard {
         return block.timestamp > _showTimeStart;
     }
 
-    function publicSaleMint(address recommender, uint256 quantity)
+    function whiteListMint(bytes32[] calldata _merkleProof, uint8 quantity)
+        external
+        payable
+        onlyEOA
+    {
+        require(isPublicSaleActive(), "Sale Not Started");
+        require(!isShowTimeStart(), "Sales Finished");
+        if (totalSupply() + quantity > MAX_SUPPLY) revert AmountExceedsSupply();
+
+        bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+        if (!MerkleProof.verify(_merkleProof, _merkleRoot, leaf))
+            revert("Not in white list");
+
+        uint256 cost = _price.mul(quantity).mul(9).div(10);
+        if (msg.value < cost) revert InsufficientPayment();
+
+        _mint(msg.sender, quantity);
+
+        // Refund overpayment
+        if (msg.value > cost) {
+            payable(msg.sender).transfer(msg.value.sub(cost));
+        }
+    }
+
+    function publicSaleMint(uint256 quantity)
         external
         payable
         onlyEOA
@@ -69,17 +91,11 @@ contract ApeMinerBodyNFT is ERC721Psi, Ownable, ReentrancyGuard {
     {
         if (!isPublicSaleActive()) revert SaleNotStarted();
         if (totalSupply() + quantity > MAX_SUPPLY) revert AmountExceedsSupply();
-        if (recommender == address(0)) recommender = owner();
-        if (!members[recommender]) revert NeedRecommender(recommender);
 
         uint256 cost = _price.mul(quantity);
         if (msg.value < cost) revert InsufficientPayment();
 
-        _safeMint(msg.sender, quantity);
-
-        uint256 split = cost.mul(_share).div(100);
-        payable(recommender).transfer(split);
-        members[msg.sender] = true;
+        _mint(msg.sender, quantity);
 
         // Refund overpayment
         if (msg.value > cost) {
@@ -159,7 +175,7 @@ contract ApeMinerBodyNFT is ERC721Psi, Ownable, ReentrancyGuard {
     function marketingMint(uint256 quantity) external onlyOwner {
         if (totalSupply() + quantity > MAX_SUPPLY) revert AmountExceedsSupply();
 
-        _safeMint(owner(), quantity);
+        _mint(owner(), quantity);
     }
 
     function withdraw() external onlyOwner {

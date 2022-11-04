@@ -20,8 +20,6 @@ contract ApeMinerInfinityGauntlet is ERC721Psi, Ownable {
 
     mapping(address => bool) users;
 
-    event AirdropStart();
-    event AirdropPaused();
     event baseUIRChanged(string);
     event newMint(address indexed _to, uint256 indexed _tokenId);
 
@@ -31,7 +29,7 @@ contract ApeMinerInfinityGauntlet is ERC721Psi, Ownable {
         _baseTokenURI = baseURI;
     }
 
-    // Airdrop
+    // mint
 
     function mint(address[] memory _to) external onlyOwner {
         if (totalSupply() + _to.length > MAX_SUPPLY)

@@ -51,9 +51,9 @@ def main():
             # sale_nft.publicSaleMint(1, addr2(creator, 0.5*10**18))
 
         if active_network in REAL_NETWORKS:
-            mjolnir = ApeMinerMjolnir[-1]
-            mjolnir.mint([iwan, creator, consumer, admin], addr(apeminer))
-            mjolnir.mint(admin, 10, addr(apeminer))
+            # mjolnir = ApeMinerMjolnir[-1]
+            # mjolnir.mint([iwan, creator, consumer, admin], addr(apeminer))
+            # mjolnir.mint(admin, 10, addr(apeminer))
 
             # tx = sale_nft.startPublicSale(addr(admin))
             # tx.wait(1)
@@ -64,6 +64,10 @@ def main():
             #     [iwan, creator, consumer, admin], addr(admin))
             # public_airdrop_nft.airdropMint(addr(iwan))
             # sale_nft.publicSaleMint(5, addr2(iwan, 5*10**18))
+
+            yarcht_party_nft = ApeMinerInfinityGauntlet[-1]
+            yarcht_party_nft.mint(
+                [iwan, creator, apeminer, consumer, '0xB9148e2CAb998462b3A7803d35212796CEFb4cf7'], addr(apeminer))
 
     except Exception:
         console.print_exception()

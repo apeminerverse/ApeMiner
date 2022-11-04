@@ -5,6 +5,8 @@ open_airdrop_ipfs = 'ipfs://bafkreihpaqicot6kjkpda676jp2poajzbbckgbc4ue67b6wnbre
 apeminer_ipfs = 'ipfs://bafkreiamehcsywzt3767uswrombs2qexunn2edlwxurzhduv4j27wdicma'
 mjolnir_ipfs = 'ipfs://bafybeidhaiyqhzlmwldshgdscirqb3lhdo33p24sk2n5cwf7jz7xjuqckq'
 
+root = '2e35b61278fbcec3f3b0bb361d928e373e089a61758af09690ce0a5391078ff2'
+
 
 def main():
     active_network = network.show_active()
@@ -20,17 +22,19 @@ def main():
             pass
 
         if active_network in TEST_NETWORKS:
+            pass
             # yarcht_party_airdrop = ApeMinerInfinityGauntlet[-1]
             # apeminer_airdrop = ApeMinerTreasureChest[-1]
             # apuminer_mint = ApeMinerNFT[-1]
-            apeminer_airdrop_cn = ApeMinerTreasureChestCN[-1]
-            mjolnir = ApeMinerMjolnir[-1]
+            # apeminer_airdrop_cn = ApeMinerTreasureChestCN[-1]
+            # mjolnir = ApeMinerMjolnir[-1]
         if active_network in REAL_NETWORKS:
-            yarcht_party_airdrop = ApeMinerInfinityGauntlet[-1]
-            apeminer_airdrop = ApeMinerTreasureChest[-1]
-            apuminer_mint = ApeMinerNFT[-1]
-            apeminer_airdrop_cn = ApeMinerTreasureChestCN[-1]
-            mjolnir = ApeMinerMjolnir[-1]
+            pass
+            # yarcht_party_airdrop = ApeMinerInfinityGauntlet[-1]
+            # apeminer_airdrop = ApeMinerTreasureChest[-1]
+            # apuminer_mint = ApeMinerNFT[-1]
+            # apeminer_airdrop_cn = ApeMinerTreasureChestCN[-1]
+            # mjolnir = ApeMinerMjolnir[-1]
     except Exception:
         console.print_exception()
         # Test net contract address
