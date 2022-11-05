@@ -5,7 +5,7 @@ open_airdrop_ipfs = 'ipfs://bafkreihpaqicot6kjkpda676jp2poajzbbckgbc4ue67b6wnbre
 apeminer_ipfs = 'ipfs://bafkreiamehcsywzt3767uswrombs2qexunn2edlwxurzhduv4j27wdicma'
 mjolnir_ipfs = 'ipfs://bafybeidhaiyqhzlmwldshgdscirqb3lhdo33p24sk2n5cwf7jz7xjuqckq'
 
-root = '2e35b61278fbcec3f3b0bb361d928e373e089a61758af09690ce0a5391078ff2'
+root = '15ba916642ccccf1d6aa205a5351b90a921aa49a240fd2048fa7e868ba55f8d2'
 
 
 def main():

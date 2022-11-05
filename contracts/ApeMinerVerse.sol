@@ -14,7 +14,7 @@ error AmountExceedsSupply();
 error InsufficientPayment();
 error NeedRecommender(address);
 
-contract ApeMinerBodyNFT is ERC721Psi, Ownable, ReentrancyGuard {
+contract ApeMinerVerse is ERC721Psi, Ownable, ReentrancyGuard {
     using SafeMath for uint256;
 
     uint256 public constant MAX_SUPPLY = 1000;
@@ -59,10 +59,25 @@ contract ApeMinerBodyNFT is ERC721Psi, Ownable, ReentrancyGuard {
         return block.timestamp > _showTimeStart;
     }
 
+    function verifyWhiteList(bytes32[] calldata _merkleProof)
+        external
+        view
+        returns (bool)
+    {
+        return (
+            !MerkleProof.verify(
+                _merkleProof,
+                _merkleRoot,
+                keccak256(abi.encodePacked(msg.sender))
+            )
+        );
+    }
+
     function whiteListMint(bytes32[] calldata _merkleProof, uint8 quantity)
         external
         payable
         onlyEOA
+        nonReentrant
     {
         require(isPublicSaleActive(), "Sale Not Started");
         require(!isShowTimeStart(), "Sales Finished");
@@ -178,7 +193,7 @@ contract ApeMinerBodyNFT is ERC721Psi, Ownable, ReentrancyGuard {
         _mint(owner(), quantity);
     }
 
-    function withdraw() external onlyOwner {
+    function withdraw() external onlyOwner nonReentrant {
         payable(owner()).transfer(address(this).balance);
     }
 
