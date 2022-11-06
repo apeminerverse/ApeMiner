@@ -12,7 +12,6 @@ error OnlyExternallyOwnedAccountsAllowed();
 error SaleNotStarted();
 error AmountExceedsSupply();
 error InsufficientPayment();
-error NeedRecommender(address);
 
 contract ApeMinerVerse is ERC721Psi, Ownable, ReentrancyGuard {
     using SafeMath for uint256;
@@ -43,7 +42,7 @@ contract ApeMinerVerse is ERC721Psi, Ownable, ReentrancyGuard {
         string memory baseURI,
         uint256 price,
         bytes32 root
-    ) ERC721Psi("ApeMinerBodyNFT", "ABN") {
+    ) ERC721Psi("ApeMinerVerse", "AMV") {
         _baseTokenURI = baseURI;
         _price = price;
         _merkleRoot = root;
@@ -94,7 +93,9 @@ contract ApeMinerVerse is ERC721Psi, Ownable, ReentrancyGuard {
 
         // Refund overpayment
         if (msg.value > cost) {
-            payable(msg.sender).transfer(msg.value.sub(cost));
+            // payable(msg.sender).transfer(msg.value.sub(cost));
+            (bool success, ) = msg.sender.call{value: msg.value.sub(cost)}("");
+            require(success, "transfer failed");
         }
     }
 
@@ -114,7 +115,9 @@ contract ApeMinerVerse is ERC721Psi, Ownable, ReentrancyGuard {
 
         // Refund overpayment
         if (msg.value > cost) {
-            payable(msg.sender).transfer(msg.value.sub(cost));
+            // payable(msg.sender).transfer(msg.value.sub(cost));
+            (bool success, ) = msg.sender.call{value: msg.value.sub(cost)}("");
+            require(success, "transfer failed");
         }
     }
 
@@ -194,7 +197,9 @@ contract ApeMinerVerse is ERC721Psi, Ownable, ReentrancyGuard {
     }
 
     function withdraw() external onlyOwner nonReentrant {
-        payable(owner()).transfer(address(this).balance);
+        // payable(owner()).transfer(address(this).balance);
+        (bool success, ) = msg.sender.call{value: address(this).balance}("");
+        require(success, "transfer failed");
     }
 
     /**
