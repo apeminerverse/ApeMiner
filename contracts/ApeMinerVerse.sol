@@ -19,7 +19,7 @@ contract ApeMinerVerse is ERC721Psi, Ownable, ReentrancyGuard {
     uint256 public constant MAX_SUPPLY = 1000;
     uint256 private constant FAR_FUTURE = 0xFFFFFFFFF;
 
-    uint256 private _publicSaleStart = FAR_FUTURE;
+    uint256 private _publicSaleStart;
     uint256 private _showTimeStart = FAR_FUTURE;
     string private _baseTokenURI;
     bytes32 private _merkleRoot;
@@ -46,6 +46,7 @@ contract ApeMinerVerse is ERC721Psi, Ownable, ReentrancyGuard {
         _baseTokenURI = baseURI;
         _price = price;
         _merkleRoot = root;
+        _publicSaleStart = block.timestamp;
     }
 
     // publicSale

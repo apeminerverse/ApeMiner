@@ -67,3 +67,4 @@ wallets:
     iwan: ${IWANCAO_PRIVATE_KEY}
     newbie: ${NEWBIE_PRIVATE_KEY}
     apeminer: ${APEMINER_PRIVATE_KEY}
+    apvs: ${APEMINER_VERSE_KEY}

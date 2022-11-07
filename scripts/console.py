@@ -5,14 +5,14 @@ open_airdrop_ipfs = 'ipfs://bafkreihpaqicot6kjkpda676jp2poajzbbckgbc4ue67b6wnbre
 apeminer_ipfs = 'ipfs://bafkreiamehcsywzt3767uswrombs2qexunn2edlwxurzhduv4j27wdicma'
 mjolnir_ipfs = 'ipfs://bafybeidhaiyqhzlmwldshgdscirqb3lhdo33p24sk2n5cwf7jz7xjuqckq'
 
-root = '15ba916642ccccf1d6aa205a5351b90a921aa49a240fd2048fa7e868ba55f8d2'
+root = '19e4d685ca19421798eb3aebf98ce36a26e247067d5cca90a18361e2e5ac677e'
 
 
 def main():
     active_network = network.show_active()
     print("Current Network:" + active_network)
 
-    admin, creator, consumer, iwan, newbie, apeminer = get_accounts(
+    admin, creator, consumer, iwan, newbie, apeminer, apvs = get_accounts(
         active_network)
 
     try:

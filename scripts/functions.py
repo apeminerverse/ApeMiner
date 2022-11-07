@@ -40,6 +40,7 @@ def get_accounts(active_network):
         iwan = accounts.add(config['wallets']['iwan'])
         newbie = accounts.add(config['wallets']['newbie'])
         apeminer = accounts.add(config['wallets']['apeminer'])
+        apvs = accounts.add(config['wallets']['apvs'])
 
         accounts[0].transfer(admin, "100 ether")
         accounts[1].transfer(creator, "100 ether")
@@ -47,6 +48,7 @@ def get_accounts(active_network):
         accounts[3].transfer(iwan, "100 ether")
         accounts[4].transfer(newbie, "100 ether")
         accounts[5].transfer(apeminer, "100 ether")
+        accounts[6].transfer(apvs, "100 ether")
 
     else:
         admin = accounts.add(config['wallets']['admin'])
@@ -55,6 +57,7 @@ def get_accounts(active_network):
         iwan = accounts.add(config['wallets']['iwan'])
         newbie = accounts.add(config['wallets']['newbie'])
         apeminer = accounts.add(config['wallets']['apeminer'])
+        apvs = accounts.add(config['wallets']['apvs'])
 
     balance_alert(admin, "admin")
     balance_alert(creator, "creator")
@@ -62,8 +65,9 @@ def get_accounts(active_network):
     balance_alert(iwan, "iwan")
     balance_alert(newbie, "newbie")
     balance_alert(apeminer, "apeminer")
+    balance_alert(apvs, "apvs")
 
-    return [admin, creator, consumer, iwan, newbie, apeminer]
+    return [admin, creator, consumer, iwan, newbie, apeminer, apvs]
 
 
 def flat_contract(name: str, meta_data: dict) -> None:
